@@ -23,7 +23,7 @@ jobs:
     - name: Check code format
       run: cargo fmt --all -- --check
     - name: Clippy
-      run: cargo hack clippy hack --target ${{ matrix.targets }} --each-feature --no-dev-deps -- -D warnings
+      run: cargo hack clippy --target ${{ matrix.targets }} --each-feature --no-dev-deps -- -D warnings
     - name: Build
       run: cargo hack build --target ${{ matrix.targets }} --each-feature --no-dev-deps
     - name: Unit test
