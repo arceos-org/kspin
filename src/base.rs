@@ -153,13 +153,13 @@ impl<G: BaseGuard, T: ?Sized> BaseSpinLock<G, T> {
     ///
     /// # Safety
     ///
-    /// This is *extremely* unsafe if the lock is not held by the current
-    /// thread. However, this can be useful in some instances for exposing the
-    /// lock to FFI that doesn't know how to deal with RAII.
+    /// This is *extremely* unsafe if the lock is not held by the current thread, or if any
+    /// existing guards are still in use. The caller is responsible for managing IRQ state.
     #[inline(always)]
-    pub unsafe fn force_unlock(&self) {
+    pub unsafe fn force_unlock(&self, irq_state: G::State) {
         #[cfg(feature = "smp")]
         self.lock.store(false, Ordering::Release);
+        G::release(irq_state);
     }
 
     /// Returns a mutable reference to the underlying data.
